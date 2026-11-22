@@ -189,14 +189,14 @@ Screens.live = (p) => {
 
   function estadoVazio() {
     if (L.loading) return '<div class="spinner"></div><div class="empty">Carregando canais…</div>';
-    if (L.err) return '<div class="erro" style="margin:20px">' + esc(L.err) + '</div><div class="empty">Aperte OK para tentar de novo.</div>';
+    if (L.err) return '<div class="erro" style="margin:20px">' + esc(L.err) + '</div><div class="empty">Aperte ' + TK.ok + ' para tentar de novo.</div>';
     const c = L.cats[L.ci];
-    if (c && c.id === '__fav') return '<div class="empty">Nenhum favorito ainda. No canal desejado, aperte o botão <b style="color:#E04848">vermelho</b>.</div>';
+    if (c && c.id === '__fav') return '<div class="empty">Nenhum favorito ainda. No canal desejado, aperte ' + TK.red + '.</div>';
     return '<div class="empty">Nenhum canal nesta categoria.</div>';
   }
 
   function dicas(extra) {
-    return '<div class="hint"><span><span class="k">OK</span>' + (L.playing && L.chans[L.sel] && L.playing.id === L.chans[L.sel].id ? 'tela cheia' : 'assistir') + '</span>' +
+    return '<div class="hint"><span><span class="k">' + TK.ok + '</span>' + (L.playing && L.chans[L.sel] && L.playing.id === L.chans[L.sel].id ? 'tela cheia' : 'assistir') + '</span>' +
       '<span><span class="k">◀</span>menu</span>' +
       '<span><i class="ck r"></i>favoritar</span><span><i class="ck g"></i>buscar</span><span><i class="ck y"></i>categorias</span><span><i class="ck b"></i>último canal</span>' + (extra || '') + '</div>';
   }
@@ -215,7 +215,7 @@ Screens.live = (p) => {
   function telaB() {
     const inf = infoSel();
     const cab = inf ?
-      '<div class="row" style="gap:14px">' + (inf.tocando ? '<span class="live-tag">AO VIVO</span>' : '<span class="badge">OK para assistir</span>') +
+      '<div class="row" style="gap:14px">' + (inf.tocando ? '<span class="live-tag">AO VIVO</span>' : '<span class="badge">' + TK.ok + ' para assistir</span>') +
       '<span style="font-size:2.2rem;color:#E3E5EA">' + esc(inf.ch.num) + ' · ' + esc(inf.ch.name) + '</span></div>' +
       '<h1 class="clip">' + esc(inf.pr ? inf.pr.title : inf.ch.name) + '</h1>' +
       '<span style="font-size:2.3rem;color:#D5D8DF">' + (inf.pr ? esc(inf.tempo + ' · ' + inf.resta) : 'Sem informação do guia') + '</span>' : '';
@@ -273,7 +273,7 @@ Screens.live = (p) => {
     return '<div class="lc"><nav class="lc-cats"><div class="logo-box" style="padding:0 8px 26px"><div class="logo-mark" style="width:48px;height:48px"></div><span class="sora" style="font-size:3.2rem;font-weight:700">TV ao Vivo</span></div>' + cats + '</nav>' +
       '<section class="lc-list"><div class="row" style="justify-content:space-between;padding:6px 8px 14px"><span class="sora" style="font-size:3rem;font-weight:600">' + esc(c.name) + '</span><span class="muted" style="font-size:2rem">' + L.chans.length + (L.chans.length === 1 ? ' canal' : ' canais') + ' · ▲▼ navegar</span></div>' + lista + '</section>' +
       '<aside class="lc-side"><div class="row" style="justify-content:flex-end">' + clockHTML() + '</div><div style="height:338px;border-radius:20px;background:#19202E;flex-shrink:0"></div>' + lado +
-      '<div class="grow"></div><div class="hint" style="flex-wrap:wrap;gap:12px 24px"><span><span class="k">OK</span>' + (inf && inf.tocando ? 'tela cheia' : 'assistir') + '</span><span><span class="k">◀</span>menu</span><span><i class="ck r"></i>favoritar</span><span><i class="ck y"></i>categorias</span><span><i class="ck b"></i>último</span></div></aside></div>';
+      '<div class="grow"></div><div class="hint" style="flex-wrap:wrap;gap:12px 24px"><span><span class="k">' + TK.ok + '</span>' + (inf && inf.tocando ? 'tela cheia' : 'assistir') + '</span><span><span class="k">◀</span>menu</span><span><i class="ck r"></i>favoritar</span><span><i class="ck y"></i>categorias</span><span><i class="ck b"></i>último</span></div></aside></div>';
   }
 
   function telaCheia() {
@@ -287,7 +287,7 @@ Screens.live = (p) => {
         '<span class="sora clip" style="font-size:3.4rem;font-weight:700">' + esc(pr ? pr.title : 'Sem informação do guia') + '</span>' +
         (pr ? '<div class="row" style="gap:18px;font-size:2rem;color:var(--sub)"><span>' + hhmm(new Date(pr.start)) + '</span><div class="bar grow"><i style="width:' + pct + '%"></i></div><span>' + hhmm(new Date(pr.stop)) + '</span></div>' : '') +
         (prox ? '<span class="muted" style="font-size:2rem">A seguir: <span style="color:#E3E5EA">' + esc(prox.title) + '</span> — ' + hhmm(new Date(prox.start)) + '</span>' : '') + '</div>' +
-        '<div class="hint" style="flex-direction:column;align-items:flex-start;gap:10px"><span><span class="k">▲▼</span>trocar canal</span><span><span class="k">OK</span>guia</span><span><i class="ck b"></i>último canal</span></div></div>';
+        '<div class="hint" style="flex-direction:column;align-items:flex-start;gap:10px"><span><span class="k">▲▼</span>trocar canal</span><span><span class="k">' + TK.ok + '</span>guia</span><span><i class="ck b"></i>último canal</span></div></div>';
     }
     return h;
   }
@@ -344,7 +344,7 @@ Screens.live = (p) => {
   function sair() {
     if (Date.now() - L.exitAt < 2500) { exitApp(); return; }
     L.exitAt = Date.now();
-    UI.toast('Aperte Voltar de novo para sair do MY HOUSE');
+    UI.toast('Aperte ' + TK.back + ' de novo para sair do MY HOUSE');
   }
 
   const self = {

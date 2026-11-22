@@ -116,6 +116,13 @@ const KEYMAP = {
 };
 const PC_COLORS = { r: 'red', g: 'green', y: 'yellow', b: 'blue' };
 
+/* Nomes das teclas nas dicas da tela: no computador mostra o teclado, na TV o controle */
+const NO_PC = !!window.MYHOUSE_PONTE;
+if (NO_PC) document.documentElement.classList.add('pc');
+const TK = NO_PC
+  ? { ok: 'Enter', back: 'Esc', red: 'a tecla R', nums: 'números do teclado', aparelho: 'teclado' }
+  : { ok: 'OK', back: 'Voltar', red: 'o botão <b style="color:#E04848">vermelho</b>', nums: 'números do controle', aparelho: 'controle' };
+
 function keyName(e) {
   const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
   if (e.keyCode >= 48 && e.keyCode <= 57 && !typing) return 'n' + (e.keyCode - 48);

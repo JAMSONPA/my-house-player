@@ -197,7 +197,7 @@ Screens.login = (p) => {
         '<div class="card" style="display:flex;flex-direction:column;gap:18px"><span class="sora" style="font-size:2.8rem;font-weight:600">Onde encontro esses dados?</span>' +
         '<div class="sub" style="font-size:2.2rem;line-height:1.5"><b class="acc">URL</b> às vezes vem como “Host”, “DNS” ou “Servidor”.<br><b class="acc">Username</b> é o seu usuário.<br><b class="acc">Password</b> é a sua senha.<br><b class="acc">M3U</b> é um link único que já traz tudo.</div></div>' +
         '<div class="card" style="font-size:2.1rem;color:#9FE0BF;background:#0F1A15;border-color:#1F4A35">Seus dados ficam guardados só nesta TV.</div>' +
-        '<div class="hint"><span><span class="k">OK</span>abrir o teclado</span><span><span class="k">▲▼</span>trocar de campo</span></div>' +
+        '<div class="hint"><span><span class="k">' + TK.ok + '</span>' + (NO_PC ? 'escrever no campo' : 'abrir o teclado') + '</span><span><span class="k">▲▼</span>trocar de campo</span></div>' +
         '</div></div></div>');
     },
     bind(k, v) { S[k] = v; },
@@ -391,7 +391,7 @@ Ov.cats = (cats, atual, onPick, titulo) => {
       const start = Math.max(0, Math.min(idx - Math.floor(N / 2), cats.length - N));
       const vis = cats.slice(start, start + N);
       $('#ov').innerHTML = '<div class="menu-dim"></div><div class="sheet"><h2>' + esc(titulo || 'Categorias') + '</h2>' +
-        '<div class="muted" style="font-size:1.9rem">' + (idx + 1) + ' de ' + cats.length + ' · ▲▼ escolher · OK abrir</div>' +
+        '<div class="muted" style="font-size:1.9rem">' + (idx + 1) + ' de ' + cats.length + ' · ▲▼ escolher · ' + TK.ok + ' abrir</div>' +
         vis.map((c, i) => {
           const j = start + i;
           return '<div class="opt' + (j === atual ? ' sel' : '') + (j === idx ? ' on' : '') + '" data-act="pick" data-v="' + j + '"><span class="clip">' + esc(c.name) + '</span></div>';

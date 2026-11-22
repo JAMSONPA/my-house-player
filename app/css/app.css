@@ -240,3 +240,8 @@ html.nogap .live-tag::before { margin-right: 8px; }
 html.nogap .btn > svg { margin-right: 12px; }
 html.nogap .em-uso > svg { margin-right: 8px; }
 html.nogap .row > .playing-dot { margin-right: 10px; }
+
+/* No computador: os quadradinhos coloridos viram as teclas R, G, Y e B */
+html.pc .ck { width: auto; height: auto; min-width: 30px; padding: 1px 8px; border-radius: 6px; text-align: center; font-weight: 700; font-style: normal; font-size: 1.6rem; line-height: 1.3; color: #fff; }
+html.pc .ck.r::after { content: 'R'; } html.pc .ck.g::after { content: 'G'; }
+html.pc .ck.y::after { content: 'Y'; color: #1A1A1A; } html.pc .ck.b::after { content: 'B'; }

@@ -76,7 +76,7 @@ Ov.pin = (o) => {
         '<div class="row" style="gap:18px">' + caixas + '</div>' +
         (P.err ? '<div class="erro" style="width:100%;text-align:center">' + esc(P.err) + '</div>' : '') +
         '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:480px">' + kp + '</div>' +
-        '<div class="hint"><span><span class="k">0–9</span>números do controle</span><span><span class="k">Voltar</span>apagar / sair</span></div>' +
+        '<div class="hint"><span><span class="k">0–9</span>' + TK.nums + '</span><span><span class="k">' + (NO_PC ? 'Backspace' : 'Voltar') + '</span>apagar / sair</span></div>' +
         '</div></div>');
     },
     act(n, d) {

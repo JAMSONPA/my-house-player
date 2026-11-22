@@ -82,13 +82,13 @@ Screens.browse = (p) => {
     }
     let corpo;
     if (B.loading) corpo = '<div class="spinner"></div>';
-    else if (B.err) corpo = '<div class="erro">' + esc(B.err) + '</div><div class="empty">Aperte OK para tentar de novo.</div>';
-    else if (!B.items.length) corpo = '<div class="empty">' + (c.id === '__cont' ? 'Nada em andamento ainda.' : c.id === '__fav' ? 'Sua lista está vazia. Aperte o botão vermelho num título para guardar aqui.' : 'Nada nesta categoria.') + '</div>';
+    else if (B.err) corpo = '<div class="erro">' + esc(B.err) + '</div><div class="empty">Aperte ' + TK.ok + ' para tentar de novo.</div>';
+    else if (!B.items.length) corpo = '<div class="empty">' + (c.id === '__cont' ? 'Nada em andamento ainda.' : c.id === '__fav' ? 'Sua lista está vazia. Aperte ' + TK.red + ' num título para guardar aqui.' : 'Nada nesta categoria.') + '</div>';
     else {
       const linha = Math.floor(B.idx / COLS);
       const vis = B.items.slice(linha * COLS, linha * COLS + COLS);
       corpo = '<div class="row" style="justify-content:space-between"><span class="sora" style="font-size:2.6rem;font-weight:600">' + esc(c.name) + '</span>' +
-        '<span class="muted" style="font-size:1.9rem">' + (B.idx + 1) + ' de ' + B.items.length + ' · OK abrir · ▲ categorias</span></div>' +
+        '<span class="muted" style="font-size:1.9rem">' + (B.idx + 1) + ' de ' + B.items.length + ' · ' + TK.ok + ' abrir · ▲ categorias</span></div>' +
         '<div class="posters">' + vis.map((x, i) => {
           const j = linha * COLS + i;
           const barra = x.pos && x.dur ? '<div class="pbar"><i style="width:' + Math.min(100, x.pos / x.dur * 100) + '%"></i></div>' : '';
@@ -243,7 +243,7 @@ Screens.serie = (p) => {
       const eps = (ss[D.si] && ss[D.si].eps) || [];
       const N = 5, e0 = Math.max(0, Math.min(D.ei - 2, eps.length - N));
       dir = '<div class="chips' + (D.zone === 'temp' ? ' foco' : '') + '">' + temps + '</div>' +
-        '<div class="muted" style="font-size:1.9rem">' + eps.length + ' episódios · OK assistir</div>' +
+        '<div class="muted" style="font-size:1.9rem">' + eps.length + ' episódios · ' + TK.ok + ' assistir</div>' +
         eps.slice(e0, e0 + N).map((e, i) => {
           const j = e0 + i, pr = progEp(e);
           const pct = pr && pr.dur ? Math.min(100, pr.pos / pr.dur * 100) : 0;
@@ -349,9 +349,9 @@ Screens.player = (p) => {
       (p.subtitle ? '<span class="clip" style="font-size:2.2rem;color:var(--sub)">' + esc(p.subtitle) + '</span>' : '') + '</div>' + clockHTML() + '</div>' +
       '<div style="position:absolute;left:80px;right:80px;bottom:56px;display:flex;flex-direction:column;gap:30px">' +
       '<div class="row" style="gap:24px;font-size:2.2rem;font-variant-numeric:tabular-nums"><span id="plpos">0:00</span><div class="pl-prog"><i id="plbar" style="width:0%"></i><b id="pldot" style="left:0%"></b></div><span id="pldur" class="sub">--:--</span></div>' +
-      '<div class="hint" style="font-size:2rem"><span><span class="k">OK</span>pausar / continuar</span><span><span class="k">◀ ▶</span>voltar / avançar 10 s</span>' +
+      '<div class="hint" style="font-size:2rem"><span><span class="k">' + TK.ok + '</span>pausar / continuar</span><span><span class="k">◀ ▶</span>voltar / avançar 10 s</span>' +
       '<span><i class="ck g"></i>áudio</span><span><i class="ck y"></i>legenda</span>' + (proximoEp() ? '<span><i class="ck b"></i>próximo episódio</span>' : '') +
-      '<span><span class="k">Voltar</span>sair</span></div></div>' +
+      '<span><span class="k">' + TK.back + '</span>sair</span></div></div>' +
       '<div class="pl-big" id="plbig" style="display:none">' + PLAY_SVG.replace(/40/g, '64') + '</div></div>' +
       '<div id="plnext"></div><div id="plload" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)"><div class="spinner"></div></div>';
     atualizar();
@@ -372,7 +372,7 @@ Screens.player = (p) => {
     const ld = $('#plload'); if (ld) ld.style.display = el.readyState < 3 && !el.paused ? 'block' : 'none';
     const nx = $('#plnext');
     if (nx) nx.innerHTML = P.next ? '<div class="next-card"><span style="font-size:1.7rem;font-weight:600;letter-spacing:1px" class="acc">PRÓXIMO EM ' + P.nextN + ' S</span>' +
-      '<span style="font-size:2.4rem;font-weight:600">' + esc(P.next.ep.num + '. ' + P.next.ep.title) + '</span><span class="muted" style="font-size:1.8rem">OK para ir agora · Voltar para cancelar</span></div>' : '';
+      '<span style="font-size:2.4rem;font-weight:600">' + esc(P.next.ep.num + '. ' + P.next.ep.title) + '</span><span class="muted" style="font-size:1.8rem">' + TK.ok + ' para ir agora · ' + TK.back + ' para cancelar</span></div>' : '';
   }
   function fim() {
     salvar(true);

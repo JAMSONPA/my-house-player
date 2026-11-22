@@ -9,7 +9,7 @@ Screens.ajustes = () => {
     ['listas', 'Minhas listas', 'Login, vencimento, atualizar'],
     ['perfis', 'Perfis', 'Criar e excluir perfis'],
     ['pais', 'Controle dos pais', 'Senha para conteúdo +18'],
-    ['sobre', 'Sobre o app', 'Versão e teclas do controle']
+    ['sobre', 'Sobre o app', 'Versão e teclas do ' + TK.aparelho]
   ];
   const MODELOS = {
     a: ['Clássico', 'Opção A', 'Guia em grade com a prévia do canal no alto. Mostra mais canais de uma vez.'],
@@ -77,7 +77,12 @@ Screens.ajustes = () => {
   }
 
   function corpoSobre() {
-    const teclas = [
+    const teclas = NO_PC ? [
+      ['▲ ▼', 'trocar de canal ou de item'], ['◀', 'abrir o menu'], ['Enter', 'assistir / tela cheia / guia'], ['Esc', 'voltar (duas vezes na TV ao Vivo: sair)'],
+      ['0–9', 'ir direto ao número do canal'], ['R', 'favoritar / Minha lista'], ['G', 'buscar (no filme: trocar áudio)'],
+      ['Y', 'categorias (no filme: legenda)'], ['B', 'último canal (na série: próximo episódio)'],
+      ['Page Up / Down', 'canal seguinte / anterior'], ['F11', 'sair ou voltar à tela cheia']
+    ] : [
       ['▲ ▼', 'trocar de canal ou de item'], ['◀', 'abrir o menu'], ['OK', 'assistir / tela cheia / guia'], ['Voltar', 'voltar (duas vezes na TV ao Vivo: sair)'],
       ['0–9', 'ir direto ao número do canal'], ['Vermelho', 'favoritar / Minha lista'], ['Verde', 'buscar (no filme: trocar áudio)'],
       ['Amarelo', 'categorias (no filme: legenda)'], ['Azul', 'último canal (na série: próximo episódio)']
@@ -94,7 +99,7 @@ Screens.ajustes = () => {
       renderKeep(root(), '<div class="bg-cinema"></div><div style="position:absolute;top: 0; right: 0; bottom: 0; left: 0;background:rgba(4,6,10,.6)"></div><div class="aj">' +
         '<nav class="aj-nav"><div class="row" style="gap:14px;padding:0 14px 30px"><span class="acc">' + ic('gear', 34) + '</span><span class="sora" style="font-size:3.8rem;font-weight:700">Ajustes</span></div>' +
         SECS.map(s => '<div class="aj-sec f' + (s[0] === A.sec ? ' sel' : '') + '" data-id="s' + s[0] + '" data-act="sec" data-v="' + s[0] + '"><span class="t">' + s[1] + '</span><span class="d">' + s[2] + '</span></div>').join('') +
-        '<div class="grow"></div><div class="hint"><span><span class="k">Voltar</span>sair dos ajustes</span></div></nav>' +
+        '<div class="grow"></div><div class="hint"><span><span class="k">' + TK.back + '</span>sair dos ajustes</span></div></nav>' +
         '<section class="aj-body">' + corpo + '</section></div>');
     },
     act(n, d) {
