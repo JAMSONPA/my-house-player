@@ -89,10 +89,12 @@ http.createServer((req, res) => {
     }
   }
   let m;
-  if ((m = /^\/live\/[^/]+\/[^/]+\/(\d+)\.(m3u8|ts)$/.exec(p))) {
+  if ((m = /^\/live\/[^/]+\/[^/]+\/(\d+)\.m3u8$/.exec(p))) {
     const txt = fs.readFileSync(path.join(MEDIA, 'live.m3u8'), 'utf8').replace(/^live(\d+)\.ts$/gm, '/media/live$1.ts');
     res.writeHead(200, { 'Content-Type': TYPES['.m3u8'], 'Access-Control-Allow-Origin': '*' }); return res.end(txt);
   }
+  if (/^\/(live\/)?[^/]+\/[^/]+\/\d+(\.ts)?$/.test(p) && !/^\/(movie|series)\//.test(p)) { res.writeHead(200, { 'Content-Type': 'video/mp2t' }); return res.end(Buffer.concat([0,1,2].map(i => fs.readFileSync(path.join(MEDIA, 'live' + i + '.ts'))))); }
+  if (p === '/lista-ts.m3u') { let t = '#EXTM3U\n'; live.slice(0, 10).forEach(s => { t += '#EXTINF:-1 tvg-id="' + s.epg_channel_id + '" group-title="' + liveCats[Number(s.category_id) - 1] + '",' + s.name + '\nhttp://localhost:' + PORT + '/' + USER + '/' + PASS + '/' + s.stream_id + '\n'; }); res.writeHead(200, { 'Content-Type': 'audio/x-mpegurl' }); return res.end(t); }
   if (/^\/(movie|series)\/[^/]+\/[^/]+\/\d+\.mp4$/.test(p)) return sendFile(req, res, path.join(MEDIA, 'vod.mp4'), 'video/mp4');
   if (p.startsWith('/media/')) return sendFile(req, res, path.join(MEDIA, path.basename(p)), TYPES[path.extname(p)] || 'application/octet-stream');
   if (p === '/m3u-negado') { res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' }); return res.end('<html><head><title>XUI.one - Debug Mode</title><style>*{box-sizing:border-box}</style></head><body>XUI.ONE INVALID_CREDENTIALS Username or password is invalid.</body></html>'); }

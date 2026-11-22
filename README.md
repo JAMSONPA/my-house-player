@@ -104,7 +104,10 @@ O `.bat` usa a pasta `app` do repositório (`..\app`). Para usar outra pasta, aj
 
 Teclas: as setas, **Enter** (OK) e **Esc** ou **Backspace** (Voltar). **R**, **G**, **Y** e **B** são os botões coloridos, e os números levam direto ao canal. **F11** sai da tela cheia.
 
-Observação: no computador tocam bem HLS (`.m3u8`) e MP4. Canais só em `.ts` e filmes em `.mkv` podem não tocar no Chrome.
+Observação:
+- No computador, os canais em MPEG-TS (`.ts`, ou `output=mpegts` no link M3U) tocam com o [mpegts.js](https://github.com/xqq/mpegts.js), que só é carregado na versão para PC.
+- HLS (`.m3u8`) e MP4 também tocam.
+- Filmes em `.mkv` podem não tocar no Chrome.
 
 ## Testes
 
@@ -116,6 +119,7 @@ node mock-server.js                 # http://localhost:8099/app/index.html  (usu
 python teste_app.py                 # 43 verificações: login, perfis, 3 modelos, canais, filmes, séries, busca, M3U...
 python teste_config.py              # 7 verificações do lista-config.json
 python teste_pais.py                # 13 verificações do controle dos pais
+python teste_pc_ts.py               # 5 verificações: canais em MPEG-TS no computador (precisa do pc/servidor-pc.js ligado)
 ```
 
 - Com `?compat=1` no endereço, o app simula o navegador antigo das TVs LG.
@@ -124,4 +128,4 @@ python teste_pais.py                # 13 verificações do controle dos pais
 ## Licença e avisos
 
 - Projeto pessoal, para uso com listas contratadas legalmente.
-- hls.js usa a licença Apache 2.0, e as fontes Inter e Sora usam a licença SIL OFL 1.1.
+- hls.js e mpegts.js usam a licença Apache 2.0, e as fontes Inter e Sora usam a licença SIL OFL 1.1.

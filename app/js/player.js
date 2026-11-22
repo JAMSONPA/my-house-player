@@ -2,7 +2,7 @@
 'use strict';
 
 const Video = {
-  el: null, hls: null, url: '', onErr: null,
+  el: null, hls: null, ts: null, url: '', onErr: null,
 
   init() {
     this.el = $('#v');
@@ -20,7 +20,17 @@ const Video = {
     v.muted = !!opts.muted;
     let real = url; try { real = decodeURIComponent(url); } catch (e) { /* ignora */ }
     const isHls = /\.m3u8(\?|$|&)/i.test(real);
-    if (isHls && !this.nativeHls() && window.Hls && Hls.isSupported()) {
+    /* No computador o Chrome não toca MPEG-TS (.ts) sozinho: usa o mpegts.js (na TV o próprio aparelho toca) */
+    const caminho = real.replace(/^.*?:\/\/[^/]+/, '').split(/[?#&]/)[0];
+    const semExt = !/\.[a-z0-9]{2,4}$/i.test(caminho);
+    const isTs = /\.ts$/i.test(caminho) || (semExt && !isHls);
+    if (isTs && window.MYHOUSE_PONTE && window.mpegts && mpegts.isSupported()) {
+      const tp = mpegts.createPlayer({ type: 'mpegts', isLive: true, url: new URL(url, location.href).href }, { enableWorker: true, liveBufferLatencyChasing: true, lazyLoad: false });
+      this.ts = tp;
+      tp.on(mpegts.Events.ERROR, () => this.fail('Este canal não está respondendo agora'));
+      tp.attachMediaElement(v);
+      tp.load();
+    } else if (isHls && !this.nativeHls() && window.Hls && Hls.isSupported()) {
       const h = new Hls({ enableWorker: true, lowLatencyMode: false, startPosition: opts.start || -1 });
       this.hls = h;
       h.on(Hls.Events.ERROR, (ev, data) => {
@@ -45,6 +55,7 @@ const Video = {
   stop() {
     const v = this.el;
     if (this.hls) { try { this.hls.destroy(); } catch (e) { /* ignora */ } this.hls = null; }
+    if (this.ts) { try { this.ts.destroy(); } catch (e) { /* ignora */ } this.ts = null; }
     try { v.pause(); } catch (e) { /* ignora */ }
     v.removeAttribute('src');
     try { v.load(); } catch (e) { /* ignora */ }

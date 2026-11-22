@@ -94,7 +94,7 @@ function arquivo(res, rel) {
     const ext = path.extname(f).toLowerCase();
     if (ext === '.html' && path.basename(f) === 'index.html') {
       /* avisa o app que está no PC: pedidos à lista passam pela ponte */
-      const html = dados.toString('utf8').replace('<head>', '<head>\n<script>window.MYHOUSE_PONTE = ' + JSON.stringify(PREFIXO) + ';</script>');
+      const html = dados.toString('utf8').replace('<head>', '<head>\n<script>window.MYHOUSE_PONTE = ' + JSON.stringify(PREFIXO) + ';</script>\n<script src="lib/mpegts.js"></script>');
       res.writeHead(200, { 'Content-Type': TIPOS['.html'], 'Cache-Control': 'no-cache' });
       res.end(html);
       return;
