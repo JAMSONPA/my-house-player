@@ -14,9 +14,10 @@ android {
     }
     /* chave fixa (guardada nos segredos do GitHub): sem ela, uma versão nova não instala por cima da antiga */
     def chave = System.getenv('MYHOUSE_KEYSTORE')
+    def temChave = chave != null && new File(chave).exists()
     signingConfigs {
         fixa {
-            if (chave && new File(chave).exists()) {
+            if (temChave) {
                 storeFile new File(chave)
                 storePassword System.getenv('MYHOUSE_KEYSTORE_SENHA')
                 keyAlias 'myhouse'
@@ -27,7 +28,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig (chave && new File(chave).exists()) ? signingConfigs.fixa : signingConfigs.debug
+            signingConfig temChave ? signingConfigs.fixa : signingConfigs.debug
         }
     }
     compileOptions {
