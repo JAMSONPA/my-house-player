@@ -1,0 +1,8 @@
+# dados da lista (usuário e senha) — nunca publicar
+lista-config.json
+**/lista-config.json
+
+node_modules/
+*.ipk
+tests/capturas*/
+*.log

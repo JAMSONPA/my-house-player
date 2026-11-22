@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@webos-tools/cli": "^3.2.6",
+    "hls.js": "^1.7.4"
+  }
+}

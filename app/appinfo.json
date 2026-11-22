@@ -1,0 +1,14 @@
+{
+  "id": "br.com.jamson.player",
+  "version": "1.0.8",
+  "vendor": "Jamson",
+  "type": "web",
+  "main": "index.html",
+  "title": "MY HOUSE",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#0B0E14",
+  "resolution": "1920x1080",
+  "disableBackHistoryAPI": true,
+  "requiredACG": []
+}
