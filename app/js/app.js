@@ -156,6 +156,7 @@ const App = {
 function exitApp() {
   try {
     if (window.webOS && window.webOS.platformBack) window.webOS.platformBack();
+    else if (window.MyHouseAndroid) window.MyHouseAndroid.sair();
     else window.close();
   } catch (e) { /* ignora */ }
 }
@@ -196,7 +197,10 @@ Screens.login = (p) => {
         '<div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:24px;padding-top:150px">' +
         '<div class="card" style="display:flex;flex-direction:column;gap:18px"><span class="sora" style="font-size:2.8rem;font-weight:600">Onde encontro esses dados?</span>' +
         '<div class="sub" style="font-size:2.2rem;line-height:1.5"><b class="acc">URL</b> às vezes vem como “Host”, “DNS” ou “Servidor”.<br><b class="acc">Username</b> é o seu usuário.<br><b class="acc">Password</b> é a sua senha.<br><b class="acc">M3U</b> é um link único que já traz tudo.</div></div>' +
-        '<div class="card" style="font-size:2.1rem;color:#9FE0BF;background:#0F1A15;border-color:#1F4A35">Seus dados ficam guardados só nesta TV.</div>' +
+        (NO_ANDROID && window.MYHOUSE_ANDROID.ip
+          ? '<div class="card" style="display:flex;flex-direction:column;gap:12px;color:#F2C46B;background:#1F1A0F;border-color:#4A3A1F"><span class="sora" style="font-size:2.6rem;font-weight:600">Mais fácil: envie pelo celular ou PC</span>' +
+            '<span class="sub" style="font-size:2.1rem;line-height:1.5">Na mesma rede Wi-Fi, abra no navegador:<br><b style="color:#fff;font-size:2.5rem">http://' + esc(window.MYHOUSE_ANDROID.ip) + ':8787/enviar</b><br>e use o código <b style="color:#fff;font-size:2.5rem;letter-spacing:4px">' + esc(window.MYHOUSE_ANDROID.codigo) + '</b></span></div>'
+          : '<div class="card" style="font-size:2.1rem;color:#9FE0BF;background:#0F1A15;border-color:#1F4A35">Seus dados ficam guardados só nesta TV.</div>') +
         '<div class="hint"><span><span class="k">' + TK.ok + '</span>' + (NO_PC ? 'escrever no campo' : 'abrir o teclado') + '</span><span><span class="k">▲▼</span>trocar de campo</span></div>' +
         '</div></div></div>');
     },

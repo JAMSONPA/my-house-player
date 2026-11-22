@@ -1,0 +1,22 @@
+plugins {
+    id 'com.android.application'
+}
+android {
+    namespace 'br.com.jamson.player'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'br.com.jamson.player'
+        minSdk 21
+        targetSdk 34
+        versionCode 109
+        versionName '1.0.9'
+    }
+    buildTypes {
+        release { minifyEnabled false; signingConfig signingConfigs.debug }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint { abortOnError false; checkReleaseBuilds false }
+}

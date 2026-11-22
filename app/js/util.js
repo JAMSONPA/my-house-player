@@ -117,11 +117,21 @@ const KEYMAP = {
 const PC_COLORS = { r: 'red', g: 'green', y: 'yellow', b: 'blue' };
 
 /* Nomes das teclas nas dicas da tela: no computador mostra o teclado, na TV o controle */
-const NO_PC = !!window.MYHOUSE_PONTE;
+/* Na TV box (app Android) a ponte também existe, mas o controle é de TV */
+const NO_ANDROID = !!window.MYHOUSE_ANDROID;
+const NO_PC = !!window.MYHOUSE_PONTE && !NO_ANDROID;
 if (NO_PC) document.documentElement.classList.add('pc');
 const TK = NO_PC
   ? { ok: 'Enter', back: 'Esc', red: 'a tecla R', nums: 'números do teclado', aparelho: 'teclado' }
   : { ok: 'OK', back: 'Voltar', red: 'o botão <b style="color:#E04848">vermelho</b>', nums: 'números do controle', aparelho: 'controle' };
+
+/* O app Android manda as teclas especiais do controle (Voltar, cores, canal) por aqui */
+window.MYHOUSE_TECLA = function (code) {
+  const e = new KeyboardEvent('keydown', { bubbles: true, cancelable: true });
+  Object.defineProperty(e, 'keyCode', { get: () => code });
+  Object.defineProperty(e, 'which', { get: () => code });
+  (document.activeElement || document).dispatchEvent(e);
+};
 
 function keyName(e) {
   const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);

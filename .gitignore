@@ -6,3 +6,6 @@ node_modules/
 *.ipk
 tests/capturas*/
 *.log
+android/app/src/main/assets/
+android/**/build/
+android/.gradle/
