@@ -499,10 +499,45 @@ function applyText() {
   c.remove('t-grande', 't-extra');
   if (t === 'grande') c.add('t-grande'); else if (t === 'extra') c.add('t-extra');
 }
+/* Encaixa o app (1920x1080) na tela. "Tamanho da tela" (Ajustes) encolhe para TVs que cortam as bordas */
 function scaleStage() {
-  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-  $('#stage').style.transform = 'scale(' + s + ')';
+  const W = window.innerWidth || document.documentElement.clientWidth || 1920;
+  const H = window.innerHeight || document.documentElement.clientHeight || 1080;
+  const z = (Number(Store.d.settings.tela) || 100) / 100;
+  const s = Math.min(W / 1920, H / 1080) * z;
+  const st = $('#stage');
+  st.style.left = Math.round((W - 1920 * s) / 2) + 'px';
+  st.style.top = Math.round((H - 1080 * s) / 2) + 'px';
+  st.style.transform = 'scale(' + s + ')';
 }
+
+/* Atualização do app na TV box Android: compara com a versão publicada no GitHub */
+const ATUALIZACAO_URL = 'https://github.com/JAMSONPA/my-house-player/releases/download/apk/';
+const Atualizacao = {
+  nova: null, estado: '',
+  instalada() { try { return window.MyHouseAndroid ? Number(window.MyHouseAndroid.versao()) : 0; } catch (e) { return 0; } },
+  nomeInstalada() { try { return window.MyHouseAndroid ? String(window.MyHouseAndroid.nomeVersao()) : ''; } catch (e) { return ''; } },
+  async verificar() {
+    if (!NO_ANDROID || !window.MyHouseAndroid) return null;
+    try {
+      const j = JSON.parse(await Api.fetchText(ATUALIZACAO_URL + 'versao.json?t=' + Date.now(), 20000));
+      this.nova = Number(j.versao) > this.instalada() ? j : null;
+    } catch (e) { this.nova = null; throw e; }
+    return this.nova;
+  },
+  instalar() {
+    if (!window.MyHouseAndroid) return;
+    this.estado = 'baixando';
+    window.MyHouseAndroid.atualizar(ATUALIZACAO_URL + 'MyHouse.apk');
+  }
+};
+window.MYHOUSE_ATUALIZACAO = function (st) {
+  Atualizacao.estado = st;
+  const msg = { baixando: 'Baixando a versão nova do MY HOUSE…', instalar: 'Confirme a instalação na tela que abriu',
+    permissao: 'Permita “instalar apps” para o MY HOUSE e depois toque em Atualizar de novo', erro: 'Não foi possível baixar a atualização. Tente de novo.' }[st];
+  if (msg) UI.toast(msg, 6000);
+  if (App.cur && App.cur.isAjustes && !App.ov) App.cur.render();
+};
 
 /* Primeiro acesso: se o app veio com o arquivo lista-config.json preenchido, conecta sozinho */
 function lerConfig() {
@@ -555,6 +590,8 @@ function boot() {
   applyText();
   scaleStage();
   window.addEventListener('resize', scaleStage);
+  setTimeout(scaleStage, 400); setTimeout(scaleStage, 1500); /* algumas TV box informam o tamanho certo só depois */
+  if (NO_ANDROID) setTimeout(() => Atualizacao.verificar().then(n => { if (n) UI.toast('Nova versão do MY HOUSE disponível: vá em Ajustes › Sobre o app', 7000); }, () => {}), 8000);
   Compat.init();
   Video.init();
 

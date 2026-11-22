@@ -35,11 +35,20 @@ public class MainActivity extends Activity {
         s.setDomStorageEnabled(true);
         s.setDatabaseEnabled(true);
         s.setMediaPlaybackRequiresUserGesture(false);
-        s.setLoadWithOverviewMode(true);
-        s.setUseWideViewPort(true);
+        /* sem zoom: o próprio app encaixa a tela 1920x1080 no tamanho da TV */
+        s.setLoadWithOverviewMode(false);
+        s.setUseWideViewPort(false);
+        s.setSupportZoom(false);
+        s.setBuiltInZoomControls(false);
+        s.setTextZoom(100);
         if (Build.VERSION.SDK_INT >= 21) s.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         web.setWebViewClient(new WebViewClient());
         web.setWebChromeClient(new WebChromeClient());
+        web.setInitialScale(0);
+        web.setScrollContainer(false);
+        web.setVerticalScrollBarEnabled(false);
+        web.setHorizontalScrollBarEnabled(false);
+        web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         web.addJavascriptInterface(new Ponte(), "MyHouseAndroid");
         web.setFocusable(true);
         web.setFocusableInTouchMode(true);
@@ -124,5 +133,26 @@ public class MainActivity extends Activity {
         public void sair() {
             runOnUiThread(new Runnable() { public void run() { finish(); } });
         }
+
+        /* número da versão instalada, para comparar com a do GitHub */
+        @JavascriptInterface
+        public int versao() {
+            try { return getPackageManager().getPackageInfo(getPackageName(), 0).versionCode; } catch (Exception e) { return 0; }
+        }
+
+        @JavascriptInterface
+        public String nomeVersao() {
+            try { return getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception e) { return ""; }
+        }
+
+        /* baixa o APK novo e abre a tela de instalação do Android */
+        @JavascriptInterface
+        public void atualizar(final String url) {
+            runOnUiThread(new Runnable() { public void run() { Atualizador.baixar(MainActivity.this, url); } });
+        }
+    }
+
+    void avisarJs(final String js) {
+        runOnUiThread(new Runnable() { public void run() { if (web != null) web.evaluateJavascript(js, null); } });
     }
 }

@@ -31,6 +31,7 @@ Screens.ajustes = () => {
     const atual = Store.layout();
     const soPerfil = !!(pr && pr.layout);
     const t = Store.d.settings.text || 'normal';
+    const z = Number(Store.d.settings.tela) || 100;
     return '<h1>Aparência da TV ao Vivo</h1><p class="sub" style="margin:-10px 0 0;font-size:2.3rem">Escolha como os canais aparecem. A troca vale na hora; filmes e séries não mudam.</p>' +
       '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px">' +
       Object.keys(MODELOS).map(k => '<div class="modelo f' + (k === atual ? ' uso' : '') + '" data-id="m' + k + '" data-act="modelo" data-v="' + k + '"' + (k === atual ? ' data-first="1"' : '') + '>' + mini(k) +
@@ -39,7 +40,9 @@ Screens.ajustes = () => {
         '<span style="font-size:2rem;line-height:1.4;color:var(--sub)">' + MODELOS[k][2] + '</span></div>').join('') + '</div>' +
       (pr ? '<div class="linha f" data-id="scope" data-act="scope"><div><div style="font-size:2.3rem;font-weight:600">Usar só no perfil ' + esc(pr.name) + '</div><div class="muted" style="font-size:1.8rem">Desligado: o modelo vale para todos os perfis desta TV</div></div><span class="toggle' + (soPerfil ? ' ligado' : '') + '"></span></div>' : '') +
       '<div class="linha"><div><div style="font-size:2.3rem;font-weight:600">Tamanho do texto</div><div class="muted" style="font-size:1.8rem">Vale para o app inteiro</div></div><div class="row" style="gap:8px">' +
-      [['normal', 'Normal'], ['grande', 'Grande'], ['extra', 'Extra grande']].map(x => '<span class="seg f' + (t === x[0] ? ' sel' : '') + '" data-id="t' + x[0] + '" data-act="texto" data-v="' + x[0] + '">' + x[1] + '</span>').join('') + '</div></div>';
+      [['normal', 'Normal'], ['grande', 'Grande'], ['extra', 'Extra grande']].map(x => '<span class="seg f' + (t === x[0] ? ' sel' : '') + '" data-id="t' + x[0] + '" data-act="texto" data-v="' + x[0] + '">' + x[1] + '</span>').join('') + '</div></div>' +
+      '<div class="linha"><div><div style="font-size:2.3rem;font-weight:600">Tamanho da tela</div><div class="muted" style="font-size:1.8rem">Se a TV cortar as bordas, diminua até aparecer tudo</div></div><div class="row" style="gap:8px">' +
+      [100, 96, 92, 88, 84].map(x => '<span class="seg f' + (z === x ? ' sel' : '') + '" data-id="z' + x + '" data-act="tela" data-v="' + x + '">' + x + '%</span>').join('') + '</div></div>';
   }
 
   function corpoListas() {
@@ -76,6 +79,20 @@ Screens.ajustes = () => {
       (nomes.length ? nomes.slice(0, 12).map(esc).join(' · ') + (nomes.length > 12 ? ' · e mais ' + (nomes.length - 12) : '') : 'Nenhuma até agora (aparecem aqui depois que você abre TV ao Vivo, Filmes ou Séries).') + '</div></div>';
   }
 
+  function blocoAtualizacao() {
+    const A2 = Atualizacao, n = A2.nova;
+    let txt, btn;
+    if (A2.estado === 'verificando') { txt = 'Procurando versão nova…'; btn = ''; }
+    else if (A2.estado === 'baixando') { txt = 'Baixando a versão nova…'; btn = ''; }
+    else if (A2.estado === 'instalar') { txt = 'Confirme a instalação na tela que abriu.'; btn = 'Atualizar de novo'; }
+    else if (A2.estado === 'semrede') { txt = 'Não foi possível verificar agora. Confira a internet.'; btn = 'Tentar de novo'; }
+    else if (n) { txt = 'Versão nova disponível: <b style="color:#fff">' + esc(n.nome || '') + '</b>'; btn = 'Atualizar app'; }
+    else if (A2.estado === 'emdia') { txt = 'Você já está com a versão mais nova.'; btn = 'Verificar de novo'; }
+    else { txt = 'Veja se há uma versão nova do app.'; btn = 'Verificar atualização'; }
+    return '<div class="linha"><div><div style="font-size:2.3rem;font-weight:600">Atualização do app</div><div class="muted" style="font-size:1.9rem">' + txt + '</div></div>' +
+      (btn ? '<button class="btn pri f" data-id="atu" data-first="1" data-act="' + (n && A2.estado !== 'instalar' ? 'instalarapp' : (A2.estado === 'instalar' ? 'instalarapp' : 'verapp')) + '">' + btn + '</button>' : '<div class="spinner" style="width:40px;height:40px"></div>') + '</div>';
+  }
+
   function corpoSobre() {
     const teclas = NO_PC ? [
       ['▲ ▼', 'trocar de canal ou de item'], ['◀', 'abrir o menu'], ['Enter', 'assistir / tela cheia / guia'], ['Esc', 'voltar (duas vezes na TV ao Vivo: sair)'],
@@ -87,12 +104,14 @@ Screens.ajustes = () => {
       ['0–9', 'ir direto ao número do canal'], ['Vermelho', 'favoritar / Minha lista'], ['Verde', 'buscar (no filme: trocar áudio)'],
       ['Amarelo', 'categorias (no filme: legenda)'], ['Azul', 'último canal (na série: próximo episódio)']
     ];
-    return '<h1>Sobre o MY HOUSE</h1><p class="sub" style="margin:0;font-size:2.3rem">Versão ' + VERSAO + '. Este app é só o player: os canais, filmes e séries vêm da lista que você assina.</p>' +
-      '<div class="card f" data-id="teclas" data-first="1" style="display:grid;grid-template-columns:220px 1fr;gap:14px 24px;font-size:2.2rem">' +
+    const atu = NO_ANDROID ? blocoAtualizacao() : '';
+    return '<h1>Sobre o MY HOUSE</h1>' + atu + '<p class="sub" style="margin:0;font-size:2.3rem">Versão ' + VERSAO + (NO_ANDROID && Atualizacao.nomeInstalada() ? ' (app ' + esc(Atualizacao.nomeInstalada()) + ')' : '') + '. Este app é só o player: os canais, filmes e séries vêm da lista que você assina.</p>' +
+      '<div class="card f" data-id="teclas"' + (NO_ANDROID ? '' : ' data-first="1"') + ' style="display:grid;grid-template-columns:220px 1fr;gap:14px 24px;font-size:2.2rem">' +
       teclas.map(t => '<span class="k" style="justify-self:start">' + t[0] + '</span><span class="sub">' + t[1] + '</span>').join('') + '</div>';
   }
 
   const self = {
+    isAjustes: true,
     render() {
       Video.el.className = 'v-hidden';
       const corpo = A.sec === 'apar' ? corpoApar() : A.sec === 'listas' ? corpoListas() : A.sec === 'perfis' ? corpoPerfis() : A.sec === 'pais' ? corpoPais() : corpoSobre();
@@ -110,6 +129,13 @@ Screens.ajustes = () => {
         Store.save(); UI.toast('Modelo ' + MODELOS[d.v][0] + ' ativado'); self.render(); return;
       }
       if (n === 'scope' && pr) { pr.layout = pr.layout ? null : Store.layout(); Store.save(); self.render(); return; }
+      if (n === 'verapp') {
+        Atualizacao.estado = 'verificando'; self.render();
+        Atualizacao.verificar().then(x => { Atualizacao.estado = x ? '' : 'emdia'; self.render(); }, () => { Atualizacao.estado = 'semrede'; self.render(); });
+        return;
+      }
+      if (n === 'instalarapp') { Atualizacao.instalar(); self.render(); return; }
+      if (n === 'tela') { Store.d.settings.tela = Number(d.v); Store.save(); scaleStage(); self.render(); return; }
       if (n === 'texto') { Store.d.settings.text = d.v; Store.save(); applyText(); self.render(); return; }
       if (n === 'atualizar') { Api.cache = {}; Api.m3u = null; UI.toast('Pronto: os dados serão baixados de novo da sua lista'); return; }
       if (n === 'addlista') { App.go('login', { canBack: true }); return; }

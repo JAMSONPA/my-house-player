@@ -30,8 +30,16 @@ jobs:
           cp -r app/. android/app/src/main/assets/www/
           rm -f android/app/src/main/assets/www/lista-config.json
 
+      - name: Preparar a chave de assinatura
+        env:
+          KEYSTORE_B64: ${{ secrets.MYHOUSE_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/myhouse.jks"; echo "MYHOUSE_KEYSTORE=$RUNNER_TEMP/myhouse.jks" >> "$GITHUB_ENV"; else echo "::warning::Sem chave fixa: o APK sai com chave temporária"; fi
+
       - name: Montar o APK
         working-directory: android
+        env:
+          MYHOUSE_KEYSTORE_SENHA: ${{ secrets.MYHOUSE_KEYSTORE_SENHA }}
         run: |
           set -o pipefail
           gradle assembleRelease --no-daemon --stacktrace 2>&1 | tee build.log || {
@@ -39,10 +47,12 @@ jobs:
             exit 1
           }
           cp app/build/outputs/apk/release/app-release.apk ../MyHouse.apk
+          echo "{\"versao\": $((100 + GITHUB_RUN_NUMBER)), \"nome\": \"1.1.$GITHUB_RUN_NUMBER\"}" > ../versao.json
+          cat ../versao.json
 
       - name: Publicar o APK (Releases)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete apk --yes --cleanup-tag || true
-          gh release create apk MyHouse.apk --title "MY HOUSE para TV box Android" --notes "APK gerado automaticamente a partir do commit ${GITHUB_SHA::7}. Baixe o MyHouse.apk e instale na TV box." --latest
+          gh release create apk MyHouse.apk versao.json --title "MY HOUSE para TV box Android" --notes "APK gerado automaticamente a partir do commit ${GITHUB_SHA::7}. Baixe o MyHouse.apk e instale na TV box." --latest

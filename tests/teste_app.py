@@ -100,7 +100,7 @@ async def main():
         await tecla('ArrowLeft'); await tecla('ArrowDown', 5); await tecla('Enter'); await pg.wait_for_timeout(500)
         await tecla('ArrowRight'); await tecla('ArrowRight'); await tecla('Enter'); await pg.wait_for_timeout(300)
         ok('Lista simples' in await pg.inner_text('#toast'), 'escolhe o modelo Lista simples (C)')
-        await tecla('ArrowDown'); await tecla('ArrowDown'); await tecla('ArrowRight', 2); await tecla('Enter')
+        await pg.click('[data-act=texto][data-v=extra]'); await pg.wait_for_timeout(300)
         await tecla('Escape'); await pg.wait_for_timeout(2500)
         ok(await pg.query_selector('.lc') is not None, 'TV ao Vivo agora aparece na Lista simples')
         ok('t-extra' in await pg.evaluate('document.documentElement.className'), 'texto extra grande aplicado')

@@ -9,3 +9,4 @@ tests/capturas*/
 android/app/src/main/assets/
 android/**/build/
 android/.gradle/
+__pycache__/
